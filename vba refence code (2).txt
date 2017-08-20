@@ -1,0 +1,81 @@
+Dim Count As Integer
+
+Private Sub CommandButton1_Click()
+WebBrowser1.Navigate (TextBox1.Text)
+End Sub
+
+Private Sub CommandButton2_Click()
+End
+End Sub
+
+Private Sub UserForm_Activate()
+Count = 2
+Trim (TextBox1.Text)
+WebBrowser1.Silent = True
+TextBox1.Text = Cells(Count, 1)
+End Sub
+
+
+Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
+If URL = WebBrowser1.LocationURL Then
+info
+loops
+End If
+End Sub
+
+Sub info()
+Dim internet As Object
+Set internet = WebBrowser1.Document
+'creating obj for div tag
+Set div = internet.getelementsbytagname("div")
+For Each vals In div
+    v = vals.ID
+    Select Case v
+    Case "bioOffices"
+    Cells(Count, 3) = vals.innertext
+    'MsgBox vals.innertext
+    Case "bioEmail"
+    Cells(Count, 4) = vals.innertext
+    'MsgBox vals.innertext
+    Case "subContent"
+    Cells(Count, 5) = vals.innertext
+    'MsgBox vals.innertext
+    
+    End Select
+Next vals
+
+'creating obj for h1 tag
+Set hone = internet.getelementsbytagname("h1")
+For Each vals1 In hone
+    v = vals1.ID
+    Select Case v
+    Case "bioTitle"
+    Cells(Count, 2) = vals1.innertext
+    'MsgBox vals1.innertext
+    End Select
+Next vals1
+
+
+'creating obj for div class
+Set dc = internet.getelementsbytagname("div")
+For Each vc In dc
+    c = vc.classname
+    Select Case c
+    Case "bioPhone"
+    Cells(Count, 6) = vc.innertext
+    'MsgBox vc.innertext
+    End Select
+Next vc
+
+End Sub
+
+
+Private Sub loops()
+If Not Count = 129 Then
+    Count = Count + 1
+    TextBox1.Text = Cells(Count, 1)
+    TextBox2.Text = Count
+    CommandButton1_Click
+End If
+End Sub
+

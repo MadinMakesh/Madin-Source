@@ -1,0 +1,226 @@
+sub getcont()
+{
+    my($ur,$cont,$ref,$method)=@_;
+	# sleep(5);
+    netfail:
+    my $request=HTTP::Request->new("$method"=>$ur);
+	our ($ip);
+	if($code=~m/5/is)
+	{
+		if($ur=~m/https/is)
+		{
+			print "UR:$ur\n";
+			($ip)=getproxy();
+			$ua->proxy('https', $ip);
+		}	
+		else
+		{
+			print "UR:$ur\n";
+			($ip)=getproxy();
+			$ua->proxy('http', $ip);
+		}
+	}	
+	print "\nIP Address:$ip\n";
+    $request->header("Content-Type"=>"application/x-www-form-urlencoded; charset=UTF-8");
+    if($ref ne '')
+    {
+   
+        $request->header("Referer"=>"$ref");
+    }
+    if(lc $method eq 'post')
+    {
+   
+        $request->content($cont);
+    }
+    my $res=$ua->request($request);
+    $cookie_jar->extract_cookies($res);
+    $cookie_jar->save;
+    $cookie_jar->add_cookie_header($request);
+    $code=$res->code;
+    print"\n $code";
+    if($code==200)
+    {
+       
+        my $content=$res->content();
+		$content=decode_entities($content);
+        return ($content,$ip);
+    }
+    elsif($code=~m/50/is)
+    {
+        print"\n Net Failure";
+        #sleep(30);
+        goto netfail;
+    }
+    elsif($code=~m/30/is)
+    {
+        print "CODE::$code\n";
+		my $loc=$res->header("Location");
+		$loc=URI::URL->new_abs($loc,$ur);
+		getcont($loc,'','','GET');
+       # my $loc=$res->header("Location");
+         # print "\nLocation: $loc";
+        # my $request1=HTTP::Request->new(GET=>$loc);
+        # $request1->header("Content-Type"=>"application/x-www-form-urlencoded; charset=UTF-8");
+        # my $res1=$ua->request($request1);
+        # $cookie_jar->extract_cookies($res1);
+        # $cookie_jar->save;
+        # $cookie_jar->add_cookie_header($request1);
+        # my $content1=$res1->content();
+        # return $content1;
+		
+		# print "$loc\n";
+		# return $loc;
+	   
+		# return ($content1,$ip);
+
+    }
+    elsif($code=~m/40/is)
+    {
+		my $content=$res->content();
+		#$content=decode_entities($content);
+		if($content=~m/(?:We're\s*sorry)/is)
+		{
+			$code="500";
+			goto netfail;
+		}
+		goto netfail;
+        #return $content;
+        print "\n URL Not found";
+    }
+}
+
+
+
+
+sub getproxy()
+{
+	g:
+	my ($port);
+	#print "\nFile read\n";
+	open FILE, "C:\\Proxy\\port_list.txt";
+	rand($.)<1 and ($port=$_) while <FILE>;
+	close FILE;
+	#print "\nnew PORT is :$port\n";
+	$port=~s/\s+//igs;
+	if(length($port)>=3)
+	{
+		return($port);
+	}
+	else
+	{
+		print "Getting proxy\r";
+		goto g;
+	}
+}
+
+**************************************************************
+sub proxy_getcont()
+{
+    my($ur,$cont,$ref,$method)=@_;
+	# sleep(5);
+    netfail:
+    my $request=HTTP::Request->new("$method"=>$ur);
+	our ($ip);
+	if($code=~m/5/is)
+	{
+		if($ur=~m/https/is)
+		{
+			print "UR:$ur\n";
+			($ip)=getproxy();
+			$ua->proxy('https', $ip);
+		}	
+		else
+		{
+			print "UR:$ur\n";
+			($ip)=getproxy();
+			$ua->proxy('http', $ip);
+		}
+	}	
+	print "\nIP Address:$ip\n";
+    $request->header("Content-Type"=>"application/x-www-form-urlencoded; charset=UTF-8");
+    if($ref ne '')
+    {
+   
+        $request->header("Referer"=>"$ref");
+    }
+    if(lc $method eq 'post')
+    {
+   
+        $request->content($cont);
+    }
+    my $res=$ua->request($request);
+    $cookie_jar->extract_cookies($res);
+    $cookie_jar->save;
+    $cookie_jar->add_cookie_header($request);
+    $code=$res->code;
+    print"\n $code";
+    if($code==200)
+    {
+       
+        my $content=$res->content();
+		$content=decode_entities($content);
+        return ($content,$ip);
+    }
+    elsif($code=~m/50/is)
+    {
+        print"\n Net Failure";
+        #sleep(30);
+        goto netfail;
+    }
+    elsif($code=~m/30/is)
+    {
+        print "CODE::$code\n";
+		my $loc=$res->header("Location");
+		$loc=URI::URL->new_abs($loc,$ur);
+		getcont($loc,'','','GET');
+       # my $loc=$res->header("Location");
+         # print "\nLocation: $loc";
+        # my $request1=HTTP::Request->new(GET=>$loc);
+        # $request1->header("Content-Type"=>"application/x-www-form-urlencoded; charset=UTF-8");
+        # my $res1=$ua->request($request1);
+        # $cookie_jar->extract_cookies($res1);
+        # $cookie_jar->save;
+        # $cookie_jar->add_cookie_header($request1);
+        # my $content1=$res1->content();
+        # return $content1;
+		
+		# print "$loc\n";
+		# return $loc;
+	   
+		# return ($content1,$ip);
+
+    }
+    elsif($code=~m/40/is)
+    {
+		my $content=$res->content();
+		#$content=decode_entities($content);
+		if($content=~m/(?:We're\s*sorry)/is)
+		{
+			$code="500";
+			goto netfail;
+		}
+		goto netfail;
+        #return $content;
+        print "\n URL Not found";
+    }
+}
+
+sub getproxy()
+{
+	g:
+	my ($port);
+	#print "\nFile read\n";
+	open FILE, "C:\\Proxy\\port_list.txt";
+	rand($.)<1 and ($port=$_) while <FILE>;
+	close FILE;
+	#print "\nnew PORT is :$port\n";
+	if(length($port)>=3)
+	{
+		return($port);
+	}
+	else
+	{
+		print "Getting proxy\r";
+		goto g;
+	}
+}

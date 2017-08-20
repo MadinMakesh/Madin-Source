@@ -1,0 +1,134 @@
+Dim count, x As Integer
+''Dim strInput As String
+''Worksheets("exercise").Activate
+''Worksheets("exercise").Columns(1).Select 'or Worksheets("SheetName").Range("A:A").Select
+''Selection.NumberFormat = "@"
+
+Dim OriginalText As String
+Dim CorrectedText As String
+'Dim regEx As New RegExp
+
+'Dim strReplace As String
+
+Private Sub CommandButton1_Click()
+WebBrowser1.Navigate (TextBox1.Text)
+End Sub
+
+Private Sub CommandButton2_Click()
+End
+End Sub
+
+Private Sub CommandButton3_Click()
+getinfo
+End Sub
+
+Private Sub TextBox2_Change()
+
+End Sub
+
+Private Sub UserForm_Activate()
+WebBrowser1.Silent = True
+count = 1
+TextBox1.Text = Cells(count, 1)
+End Sub
+
+
+Private Sub WebBrowser1_DocumentComplete(ByVal pDisp As Object, URL As Variant)
+If URL = WebBrowser1.LocationURL Then
+    getinfo
+    'satya
+    
+'    For x = 1 To 20
+'        Application.Wait (Now + TimeValue("0:00:05"))
+'        clickinfo
+'    Next x
+    
+End If
+End Sub
+''
+''Sub simpleregEx()
+''With regEx
+''            .Global = True
+''            .MultiLine = True
+''            .IgnoreCase = False
+''            .Pattern = strPattern
+''        End With
+''        strInput = "\n"
+''                strReplace = "\|"
+''                     If regEx.Text(strInput) Then
+''            simpleCellRegex = Text.Replace(strInput, strReplace)
+''        Else
+''            simpleCellRegex = "Not matched"
+''        End If
+''End Sub
+''End Sub
+
+
+Private Sub satya()
+
+Dim str As Object
+    Set str = WebBrowser1.Document.getElementbyID("bioslisting")
+    x = 1
+    y = 1
+    Z = 1
+    p = 1
+    l = 1
+    Pi = 1
+    Text = ""
+    Set div = str.getElementsbyTagName("div")
+    For Each a In div
+        cn = a.classname
+        Select Case cn
+            Case "name"
+                Cells(x, 2) = a.innerTEXT
+                x = x + 1
+            Case "title"
+                Cells(y, 3) = a.innerTEXT
+                y = y + 1
+            Case "email"
+                Cells(Z, 4) = a.innerTEXT
+                Z = Z + 1
+            Case "phone"
+                Cells(p, 5) = a.innerTEXT
+                p = p + 1
+             Case "location"
+                Cells(l, 6) = a.innerTEXT
+                l = l + 1
+             Case "industry"
+             
+                CorrectedText = Replace(a.innerTEXT, vbCrLf, "|")
+                TextBox2.Text = TextBox2.Text + vbCrLf + CorrectedText
+             
+                Dim li As Object
+                Set li = a
+                Set lia = li.getElementsbyTagName("li")
+                For Each aa In lia
+                    Text = Text + "|" + aa.innerTEXT
+                Next aa
+                Cells(Pi, 7) = Mid(Text, 2, Len(Text))
+                
+                Text = ""
+                Pi = Pi + 1
+                
+             
+'                Cells(Pi, 7) = a.innerText
+'
+'                OriginalText = a.innerText
+'                CorrectedText = Replace(OriginalText, "\s", "\|")
+'                Cells(Pi, 7) = CorrectedText
+'                Pi = Pi + 1
+''
+''
+''                Text = a.innertext
+'''                 Cells(Pi, 7) = Text
+'''                  CorrectedText = Replace(Text, "\n", "|")
+'''                Cells("Pi, 7") = "1st" + "\|" + "2nd"
+'''                 Cells(Pi, 7) = Text.Replace(strInput, strReplace)
+''''                simpleregEx
+''               Cells(Pi, 7) = Text
+''
+''               LastRow = ActiveSheet.UsedRange.SpecialCells(xlCellTypeLastCell).Row
+''
+''    For i = 1 To LastRow
+''
+''    OriginalText = Workshee
